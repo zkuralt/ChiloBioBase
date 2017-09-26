@@ -99,28 +99,12 @@ dbSendQuery(conn = con, statement =
             FOREIGN KEY(Locality_id) REFERENCES Locality(Locality_id),
             Survey_id INT,
             FOREIGN KEY(Survey_id) REFERENCES Survey(Survey_id),
-            Collection_id,
+            Collection_id INT,
             FOREIGN KEY(Collection_id) REFERENCES Collection(Collection_id),
-            Morpho_id,
-            FOREIGN KEY(Morpho_id) REFERENCES Morphological_data(Morpho_id)
-            Molecular_id,
-            FOREIGN KEY(Molecular_id) REFERENCES Molecular_data(Molecular_id)
-            Added_by
-            FOREIGN KEY(Added_by) REFERENCES Users(user_id),
+            Morpho_id INT,
+            FOREIGN KEY(Morpho_id) REFERENCES Morphological_data(Morpho_id),
+            Molecular_id INT,
+            FOREIGN KEY(Molecular_id) REFERENCES Molecular_data(Molecular_id),
+            User_id INT,
+            FOREIGN KEY(User_id) REFERENCES Users(User_id)
             )")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
