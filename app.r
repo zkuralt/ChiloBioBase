@@ -3,6 +3,7 @@ library(shiny)
 library(shinydashboard)
 library(leaflet)
 source("./global.R")
+source("./creds.R")
 
 # Formatting header. Need to look into the dropdown menus.
 header <- dashboardHeader(title = "ChiloBioBase 2.0",
