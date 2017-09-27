@@ -12,6 +12,7 @@ dbSendQuery(conn = con, statement =
             Name VARCHAR(40),
             Surname VARCHAR(40),
             Email VARCHAR(50),
+            Last_Seen DATETIME, 
             FOREIGN KEY (Role_id) REFERENCES Roles(Role_id)
             )")
 
@@ -106,5 +107,6 @@ dbSendQuery(conn = con, statement =
             Molecular_id INT,
             FOREIGN KEY(Molecular_id) REFERENCES Molecular_data(Molecular_id),
             User_id INT,
-            FOREIGN KEY(User_id) REFERENCES Users(User_id)
+            FOREIGN KEY(User_id) REFERENCES Users(User_id),
+            Entry_Stamp TIMESTAMP
             )")
