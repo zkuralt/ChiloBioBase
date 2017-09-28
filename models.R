@@ -110,3 +110,9 @@ dbSendQuery(conn = con, statement =
             FOREIGN KEY(User_id) REFERENCES Users(User_id),
             Entry_Stamp TIMESTAMP
             )")
+
+dbSendQuery(conn = con, statement = 
+              "CREATE TABLE IF NOT EXISTS Habitat(
+            Habitat_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            Habitat_type VARCHAR(20)
+            )")
