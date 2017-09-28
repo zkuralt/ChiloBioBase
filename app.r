@@ -1,5 +1,6 @@
 # Load needed packages
 library(DBI)
+library(DT)
 library(shiny)
 library(shinydashboard)
 library(leaflet)
@@ -60,22 +61,26 @@ body <- dashboardBody(
                   dateInput(inputId = "date", label = "Date of survey:", weekstart = 1, format = "dd. mm. yyyy"), ## naredi reaktivno, da izberejo popis na ta datum
                   selectInput(inputId = "sex", label = "Sex", choices = sexList),
                   textInput(inputId = "stage", label = "Stage"),
-                  selectInput(inputId = "user", label = "Added by:", choices = userList),
-                  submitButton(text = " Submit record", icon = icon("bug"))),
+                  selectInput(inputId = "user", label = "Added by:", choices = userList)),
               box(title = "Morphological data input", solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
-                  uiOutput('ordo')),
+                  uiOutput("ordoOut")),
               box(title = "Molecular data input", solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE),
               box(title = "Photo data input", solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                   fileInput(inputId = "picture", multiple = TRUE, buttonLabel = "Submit pictures", 
                             accept=c('image/jpeg', 'image/png', 'image/bmp'), label = "Add pictures",
                             placeholder = "No file selected"))
-              
             )
     ),
     tabItem(tabName = "view",
             h2("View data")),
     tabItem(tabName = "query",
-            h2("Create query and download data")),
+            h2("Create query and download data"),
+            fluidRow(
+              box(title = "SQL query", solidHeader = TRUE, width = 12, collapsible = TRUE,
+                  textInput(inputId = "sqlQuery", label = "", placeholder = "here goes your query"),
+                  actionButton(inputId = "sendQuery", label = "Send query"))),
+            fluidRow(
+              uiOutput("queryBox"))),
     tabItem(tabName = "tables",
             h2("Edit relational tables"))
   )
@@ -86,15 +91,58 @@ ui <- dashboardPage(header, sidebar, body, skin = "black")
 
 server <- function(input, output) {
   
-  observe({
-    input$ordo
-  })
-  
-  output$ordo <-  renderUI({
+  output$ordoOut <- renderUI({
+    ordo <- input$ordo
+    if (ordo %in% "") {
+      out <- h5("Select ordo")
+    }
     
+    if (ordo %in% "Lithobiomorpha") {
+      out  <- h5("Lithobiomorpha")
+    }
+    
+    if (ordo %in% "Geophilomorpha") {
+      out  <- h5("Geophilomorpha")
+    }
+    
+    if (ordo %in% "Scolopendromorpha") {
+      out  <- h5("Scolopendromorpha")
+    }
+    
+    if (ordo %in% "Scutigeromorpha") {
+      out  <- h5("Scutigeromorpha")
+    }
+    out
+  })
+  
+  observeEvent(input$sendQuery, {
+    output$queryResult <- DT::renderDataTable({
+      statement <- input$sqlQuery
+      x <- dbGetQuery(conn = con, statement = statement)
+      DT::datatable(x, options = list(scrolX = TRUE))
+    })
+    
+    output$queryBox <- renderUI({
+      x <- input$sqlQuery
+      if (!is.null(x)) {
+        box(solidHeader = TRUE, title = "Query result", width = 12,
+            downloadButton(outputId = "downloadCSV", label = "Download data", icon = icon("download")),
+            br(),
+            br(),
+            dataTableOutput("queryResult"))
+      }
+    })
   })
   
   
+    output$downloadCSV <- downloadHandler(
+      filename = function() { paste("chilo_query-", format(Sys.time(), "%Y%m%d_%H%M"), ".csv", sep = "") },
+      content = function(file){
+        statement <- input$sqlQuery
+        x <- dbGetQuery(conn = con, statement = statement)
+        print(x)
+        write.table(x, file, row.names = FALSE, sep = ",", fileEncoding = "UTF-8")
+    })
   
   
   output$leaflet <- renderLeaflet({ # reloads map

@@ -14,7 +14,7 @@ userList <- users$User_id
 names(userList) <- users$newname
 userList <- c(" " = "", userList)
 
-ordoList <- data.frame(Ordo = c("","Lithobiomorpha", "Geophilomorpha",  "Scolopendromorpha", "Scutigeromorpha"))
+ordoList <- data.frame(Ordo = c("", "Lithobiomorpha", "Geophilomorpha",  "Scolopendromorpha", "Scutigeromorpha"))
 
 localityList <- data.frame(Locality = c("", "Medvedjak", "Draga pri Igu"))
 
@@ -22,4 +22,3 @@ habitatTypes <- data.frame("Habitat type" = c("cave", "thermophilic", "psychroph
 
 sexList <- data.frame(Sex = c("", "Male", "Female", "Indistinguishable"))
 
-# dbDisconnect(con)
