@@ -1,10 +1,12 @@
 # Load needed packages
 library(DBI)
+library(RSQLite)
+library(sqldf)
 library(DT)
 library(shiny)
 library(shinydashboard)
 library(leaflet)
-source("./creds.R")
+source("./mock_creds.R")
 source("./global.R")
 
 # Formatting header. Need to look into the dropdown menus.
