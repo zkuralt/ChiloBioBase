@@ -1,16 +1,14 @@
 # Load needed packages
+library(DBI)
 library(shiny)
 library(shinydashboard)
 library(leaflet)
-source("./global.R")
 source("./creds.R")
+source("./global.R")
 
 # Formatting header. Need to look into the dropdown menus.
 header <- dashboardHeader(title = "ChiloBioBase 2.0",
-                          dropdownMenu(type = "notifications",
-                                       notificationItem(
-                                         text = "4 records added today",
-                                         icon("exclamation-triangle"))),
+                          dropdownMenu(type = "notifications", notificationItem(text = "4 records added today", icon("exclamation-triangle"))),
                           dropdownMenu(type = "tasks",
                                        taskItem(value = 0, color = "red", "Importing existing flatfile database"),
                                        taskItem(value = 4, color = "blue", "Setting up the database"),
@@ -39,7 +37,7 @@ body <- dashboardBody(
               infoBox(title = "Localities", value = 59, icon = icon("map-marker"), color = "yellow", width = 3),
               infoBox(title = "Users", value = 6, icon = icon("group"), color = "light-blue", width = 3),
               infoBox(title = "Records", value = 19358, icon = icon("list"), color = "purple", width = 3)
-              ),
+            ),
             fluidRow(
               box(title = "Quick filter", solidHeader = TRUE, height = 500, width = 4,
                   h5("Filter records displayed in map"),
@@ -47,31 +45,33 @@ body <- dashboardBody(
                   sliderInput("filterAltitude", "Altitude range:", min = 0, max = 2864, value = c(400,800), step = 100,
                               sep = "", post = " m")
                   # selectInput(inputId = "filterHabitat", label = "Habitat type", choices = habitatTypes, )
-                  ),
+              ),
               box(solidHeader = TRUE, height = 500, width = 8,
                   leafletOutput("leaflet", height = 480))
             )
-            ),
+    ),
     tabItem(tabName = "input",
             h2("Forms for new data input"),
             fluidRow(
               box(title = "Input form", solidHeader = TRUE,
+                  selectInput(inputId = "ordo", label = "Select ordo:", choices = ordoList),
                   selectInput(inputId = "species", label = "Select species:", choices = specList),
                   selectInput(inputId = "locality", label = "Select locality:", choices = localityList),
-                  dateInput(inputId = "date", label = "Date of survey:", weekstart = 1), ## naredi reaktivno, da izberejo popis na ta datum
-                  textInput(inputId = "sex", label = "Sex"),
+                  dateInput(inputId = "date", label = "Date of survey:", weekstart = 1, format = "dd. mm. yyyy"), ## naredi reaktivno, da izberejo popis na ta datum
+                  selectInput(inputId = "sex", label = "Sex", choices = sexList),
                   textInput(inputId = "stage", label = "Stage"),
                   selectInput(inputId = "user", label = "Added by:", choices = userList),
-                  submitButton(text = " Submit record", icon = icon("bug"))
-                  ),
+                  submitButton(text = " Submit record", icon = icon("bug"))),
               box(title = "Morphological data input", solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
-                  uiOutput()),
+                  uiOutput('ordo')),
               box(title = "Molecular data input", solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE),
               box(title = "Photo data input", solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                   fileInput(inputId = "picture", multiple = TRUE, buttonLabel = "Submit pictures", 
                             accept=c('image/jpeg', 'image/png', 'image/bmp'), label = "Add pictures",
                             placeholder = "No file selected"))
-            )),
+              
+            )
+    ),
     tabItem(tabName = "view",
             h2("View data")),
     tabItem(tabName = "query",
@@ -85,7 +85,14 @@ ui <- dashboardPage(header, sidebar, body, skin = "black")
 
 
 server <- function(input, output) {
-# Huh, server needs some work too :)
+  
+  observe({
+    input$ordo
+  })
+  
+  output$ordo <-  renderUI({
+    
+  })
   
   
   
@@ -97,11 +104,10 @@ server <- function(input, output) {
       addScaleBar(position = "bottomleft", scaleBarOptions(metric = TRUE, imperial = FALSE)) %>% 
       setView(lng = 14.815333, lat = 46.119944, zoom = 8)
   })
-    
-    onSessionEnded(function() {
-      dbDisconnect(con)
-    })
+  
+  onSessionEnded(function() {
+    dbDisconnect(con)
+  })
 }
 
-  shinyApp(ui, server)
-  
+shinyApp(ui, server)
