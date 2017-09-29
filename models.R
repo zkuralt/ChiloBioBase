@@ -1,12 +1,12 @@
 dbClearResult(dbSendQuery(conn = con, statement = 
-              "CREATE TABLE IF NOT EXISTS Roles(
+                            "CREATE TABLE IF NOT EXISTS Roles(
             Role_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
             Role VARCHAR(20),
             Privileges VARCHAR(30)
             )"))
 
 dbClearResult(dbSendQuery(conn = con, statement = 
-              "CREATE TABLE IF NOT EXISTS Habitat(
+                            "CREATE TABLE IF NOT EXISTS Habitat(
             Habitat_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
             Habitat_type VARCHAR(20)
 )"))
@@ -15,8 +15,7 @@ dbClearResult(dbSendQuery(conn = con, statement =
                             "CREATE TABLE IF NOT EXISTS Sex(
             Sex_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
             Sex VARCHAR(10)
-              )
-            "))
+              )"))
 
 dbClearResult(dbSendQuery(conn = con, statement = 
                             "CREATE TABLE IF NOT EXISTS Stage(
@@ -24,8 +23,38 @@ dbClearResult(dbSendQuery(conn = con, statement =
       Stage VARCHAR(10)
                         )"))
 
+dbClearResult(dbSendQuery(conn = con, statement =
+                            "CREATE TABLE IF NOT EXISTS UTM(
+                          UTM_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                          UTM_grid VARCHAR(10)
+)"))
+
 dbClearResult(dbSendQuery(conn = con, statement = 
-              "CREATE TABLE IF NOT EXISTS Users(
+                            "CREATE TABLE IF NOT EXISTS Original_Projection(
+                          Original_Projection_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                          Original_Projection VARCHAR(10)
+)"))
+
+dbClearResult(dbSendQuery(conn = con, statement =
+                            "CREATE TABLE IF NOT EXISTS Country(
+                          Country_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                          Country VARCHAR(40)
+)"))
+
+dbClearResult(dbSendQuery(conn = con, statement =
+                            "CREATE TABLE IF NOT EXISTS Ecosystem(
+                          Ecosystem_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                          Ecosystem VARCHAR(40)
+)"))
+
+dbClearResult(dbSendQuery(conn = con, statement =
+                            "CREATE TABLE IF NOT EXISTS Bedrock(
+                          Bedrock_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                          Bedrock VARCHAR(40)
+)"))
+
+dbClearResult(dbSendQuery(conn = con, statement = 
+                            "CREATE TABLE IF NOT EXISTS Users(
             User_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
             Role_id INT,
             Name VARCHAR(40),
@@ -36,7 +65,7 @@ dbClearResult(dbSendQuery(conn = con, statement =
             )"))
 
 dbClearResult(dbSendQuery(conn = con, statement =  
-              "CREATE TABLE IF NOT EXISTS Species(
+                            "CREATE TABLE IF NOT EXISTS Species(
             Species_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
             Genus VARCHAR(20),
             Subgenus VARCHAR(20),
@@ -53,7 +82,7 @@ dbClearResult(dbSendQuery(conn = con, statement =
             )"))
 
 dbClearResult(dbSendQuery(conn = con, statement = 
-              "CREATE TABLE IF NOT EXISTS Locality(
+                            "CREATE TABLE IF NOT EXISTS Locality(
             Locality_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
             Locality_Name VARCHAR(30),
             Locality_PlaceNear VARCHAR(30),
@@ -61,20 +90,24 @@ dbClearResult(dbSendQuery(conn = con, statement =
             Country VARCHAR(20),
             Original_X DECIMAL(8,2),
             Original_Y DECIMAL(8,2),
-            Original_Projection VARCHAR(30),
+            Original_Projection_id INT,
+            FOREIGN KEY(Original_Projection_id) REFERENCES Original_Projection(Original_Projection_id),
             Latitude DECIMAL(8,6),
             Longitude DECIMAL(8,6),
             Accuracy TINYINT,
-            UTM_grid VARCHAR(10),
+            UTM_id INT,
+            FOREIGN KEY(UTM_id) REFERENCES UTM(UTM_id),
             Altitude SMALLINT,
-            Ecosystem VARCHAR(30),
+            Ecosystem_id INT,
+            FOREIGN KEY (Ecosystem_id) REFERENCES Ecosystem(Ecosystem_id),
             Habitat_id INT,
             FOREIGN KEY (Habitat_id) REFERENCES Habitat(Habitat_id) ,
-            Bedrock VARCHAR(30)
+            Bedrock_id INT,
+            FOREIGN KEY (Bedrock_id) REFERENCES Bedrock(Bedrock_id)
             )"))
 
 dbClearResult(dbSendQuery(conn = con, statement = 
-              "CREATE TABLE IF NOT EXISTS Survey(
+                            "CREATE TABLE IF NOT EXISTS Survey(
             Survey_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
             Date DATE,
             Sampling_unit VARCHAR(20),
@@ -82,7 +115,7 @@ dbClearResult(dbSendQuery(conn = con, statement =
             )"))
 
 dbClearResult(dbSendQuery(conn = con, statement = 
-              "CREATE TABLE IF NOT EXISTS Collection(
+                            "CREATE TABLE IF NOT EXISTS Collection(
             Collection_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
             Collection VARCHAR(20),
             Inventary_Number VARCHAR(20),
@@ -91,7 +124,7 @@ dbClearResult(dbSendQuery(conn = con, statement =
             )"))
 
 dbClearResult(dbSendQuery(conn = con, statement =
-              "CREATE TABLE IF NOT EXISTS Morphological_data(
+                            "CREATE TABLE IF NOT EXISTS Morphological_data(
             Morpho_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
             Geophilomorpha_leg_count TINYINT,
             Lithobiomorpha_leg_count TINYINT,
@@ -100,7 +133,7 @@ dbClearResult(dbSendQuery(conn = con, statement =
             )"))
 
 dbClearResult(dbSendQuery(conn = con, statement =
-              "CREATE TABLE IF NOT EXISTS Molecular_data(
+                            "CREATE TABLE IF NOT EXISTS Molecular_data(
             Molecular_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
             Marker_Type VARCHAR(20),
             Sample_Type VARCHAR(20),
@@ -110,7 +143,7 @@ dbClearResult(dbSendQuery(conn = con, statement =
             )"))
 
 dbClearResult(dbSendQuery(conn = con, statement = 
-              "CREATE TABLE IF NOT EXISTS Specimen(
+                            "CREATE TABLE IF NOT EXISTS Specimen(
             Specimen_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
             Species_id INT,
             FOREIGN KEY(Species_id) REFERENCES Species(Species_id),

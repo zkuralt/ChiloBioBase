@@ -102,8 +102,23 @@ dbWriteTable(conn = con,
 habitat <- data.frame(Habitat_type = c("Deciduous forest", "Wetland", "Meadow", "Karstic meadow", "Mixed forest"))
 dbWriteTable(conn = con, name = "Habitat", value = habitat, append = TRUE)
 
-stage <- data.frame(Stage = c("Instar 1", "Instar 2", "Instar 3", "Instar 4"))
+stage <- data.frame(Stage = c("Instar 1", "Instar 2", "Instar 3", "Instar 4", "Adult"))
 dbWriteTable(conn = con, name = "Stage", value = stage, append = TRUE)
+
+utm <- data.frame(UTM_grid = c("VL10", "VL11", "VL12", "VL01"))
+dbWriteTable(conn = con, name = "UTM", value = utm, append = TRUE)
+
+origproj <- data.frame(Original_Projection = c("EPSG:3912", "EPSG:5001", "EPSG:3567"))
+dbWriteTable(conn = con, name = "Original_Projection", value = origproj, append = TRUE)
+
+country <- data.frame(Country = c("Slovenia", "Croatia", "Austria", "Italy"))
+dbWriteTable(conn = con, name = "Country", value = country, append = TRUE)
+
+ecosystem <- data.frame(Ecosystem = c("Forest", "Wetland", "Karst", "Hochkarst"))
+dbWriteTable(conn = con, name = "Ecosystem", value = ecosystem, append = TRUE)
+
+bedrock <- data.frame(Bedrock = c("Limestone", "Dolomite", "Vulcanic"))
+dbWriteTable(conn = con, name = "Bedrock", value = bedrock, append = TRUE)
 
 localities <- rbind(data.frame(Locality_Name = "Oddelek za biologijo",
                                Locality_PlaceNear = "Ljubljana",
@@ -111,45 +126,45 @@ localities <- rbind(data.frame(Locality_Name = "Oddelek za biologijo",
                                Country = "Slovenia",
                                Original_X = 100921.93,
                                Original_Y = 459385.72,
-                               Original_Projection = "EPSG:3912",
+                               Original_Projection_id = 1,
                                Latitude = 46.05120,
                                Longitude = 14.47035,
                                Accuracy = "1",
-                               UTM_grid = "unknown",
+                               UTM_id = 1,
                                Altitude = 296,
-                               Ecosystem = "concrete",
+                               Ecosystem_id = 2,
                                Habitat_id = 5,
-                               Bedrock = "concrete"),
+                               Bedrock_id = 3),
                     data.frame(Locality_Name = "Glažuta",
                                Locality_PlaceNear = "Grčarice",
                                Locality_OtherNames = "",
                                Country = "Slovenia",
                                Original_X = 58605.64 ,
                                Original_Y = 475930.25,
-                               Original_Projection = "EPSG:3912",
+                               Original_Projection_id = 2,
                                Latitude = 45.671244,
                                Longitude = 14.686290,
                                Accuracy = "1",
-                               UTM_grid = "unknown",
+                               UTM_id = 3,
                                Altitude = 761,
-                               Ecosystem = "forest",
+                               Ecosystem_id = 4,
                                Habitat_id = 2,
-                               Bedrock = "limestone"),
+                               Bedrock_id = 1),
                     data.frame(Locality_Name = "Mala lazna",
                                Locality_PlaceNear = "Trnovski gozd",
                                Locality_OtherNames = "",
                                Country = "Slovenia",
                                Original_X = 93582.17,
                                Original_Y = 409345.69,
-                               Original_Projection = "EPSG:3912",
+                               Original_Projection_id = 1,
                                Latitude = 45.980349,
                                Longitude = 13.825210,
                                Accuracy = "1",
-                               UTM_grid = "unknown",
+                               UTM_id = 2,
                                Altitude = 1094,
-                               Ecosystem = "forest",
+                               Ecosystem_id = 1,
                                Habitat_id = 1,
-                               Bedrock = "limestone"))
+                               Bedrock_id = 1))
 
 dbWriteTable(conn = con, 
              name = "Locality",
