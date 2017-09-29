@@ -122,7 +122,7 @@ server <- function(input, output) {
     }
     out
   })
-  
+  #### Querying database ####  
   observeEvent(input$sendQuery, {
     output$queryResult <- DT::renderDataTable({
       statement <- input$sqlQuery
@@ -161,21 +161,21 @@ server <- function(input, output) {
       setView(lng = 14.815333, lat = 46.119944, zoom = 8)
   })
   
- 
+  ### TO-DO: Enable filtering by Species
   
   filteredData <- reactive({
     localityList[localityList$Altitude >= input$filterAltitude[1] & localityList$Altitude <= input$filterAltitude[2],]
   })
   
   observe({
-    
     leafletProxy("leaflet", data = filteredData()) %>%
       clearMarkerClusters() %>% 
-      addMarkers(clusterOptions = markerClusterOptions(showCoverageOnHover = TRUE, zoomToBoundsOnClick = TRUE),
+      addMarkers(clusterOptions = markerClusterOptions(showCoverageOnHover = TRUE, 
+                                                       zoomToBoundsOnClick = TRUE), ### TO-DO: Change marker icon
                  layerId = "1",
                  popup = filteredData()$Locality_Name)
   })
-  
+  #####  
   
   onSessionEnded(function() {
     dbDisconnect(con)
