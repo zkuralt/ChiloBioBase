@@ -16,6 +16,9 @@ dbWriteTable(conn = con,
              value = users,
              append = TRUE)
 
+sex <- data.frame(Sex = c("Male", "Female", "Unknown"))
+dbWriteTable(conn = con, name = "Sex", value = sex, append = TRUE)
+
 species <- rbind(data.frame(Genus = "Lithobius",
                            Subgenus = "",
                            Species = "erythrocephalus",
@@ -96,6 +99,12 @@ dbWriteTable(conn = con,
              value = species,
              append = TRUE)
 
+habitat <- data.frame(Habitat_type = c("Deciduous forest", "Wetland", "Meadow", "Karstic meadow", "Mixed forest"))
+dbWriteTable(conn = con, name = "Habitat", value = habitat, append = TRUE)
+
+stage <- data.frame(Stage = c("Instar 1", "Instar 2", "Instar 3", "Instar 4"))
+dbWriteTable(conn = con, name = "Stage", value = stage, append = TRUE)
+
 localities <- rbind(data.frame(Locality_Name = "Oddelek za biologijo",
                                Locality_PlaceNear = "Ljubljana",
                                Locality_OtherNames = "Faks",
@@ -107,9 +116,9 @@ localities <- rbind(data.frame(Locality_Name = "Oddelek za biologijo",
                                Longitude = 14.47035,
                                Accuracy = "1",
                                UTM_grid = "unknown",
-                               Altitude = "296",
+                               Altitude = 296,
                                Ecosystem = "concrete",
-                               Habitat_type = "not that comfortable",
+                               Habitat_id = 5,
                                Bedrock = "concrete"),
                     data.frame(Locality_Name = "Glažuta",
                                Locality_PlaceNear = "Grčarice",
@@ -122,9 +131,9 @@ localities <- rbind(data.frame(Locality_Name = "Oddelek za biologijo",
                                Longitude = 14.686290,
                                Accuracy = "1",
                                UTM_grid = "unknown",
-                               Altitude = "761",
+                               Altitude = 761,
                                Ecosystem = "forest",
-                               Habitat_type = "Mixed forest",
+                               Habitat_id = 2,
                                Bedrock = "limestone"),
                     data.frame(Locality_Name = "Mala lazna",
                                Locality_PlaceNear = "Trnovski gozd",
@@ -137,9 +146,9 @@ localities <- rbind(data.frame(Locality_Name = "Oddelek za biologijo",
                                Longitude = 13.825210,
                                Accuracy = "1",
                                UTM_grid = "unknown",
-                               Altitude = "1094",
+                               Altitude = 1094,
                                Ecosystem = "forest",
-                               Habitat_type = "Mixed forest",
+                               Habitat_id = 1,
                                Bedrock = "limestone"))
 
 dbWriteTable(conn = con, 

@@ -1,11 +1,30 @@
-dbSendQuery(conn = con, statement = 
+dbClearResult(dbSendQuery(conn = con, statement = 
               "CREATE TABLE IF NOT EXISTS Roles(
             Role_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
             Role VARCHAR(20),
             Privileges VARCHAR(30)
-            )")
+            )"))
 
-dbSendQuery(conn = con, statement = 
+dbClearResult(dbSendQuery(conn = con, statement = 
+              "CREATE TABLE IF NOT EXISTS Habitat(
+            Habitat_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            Habitat_type VARCHAR(20)
+)"))
+
+dbClearResult(dbSendQuery(conn = con, statement = 
+                            "CREATE TABLE IF NOT EXISTS Sex(
+            Sex_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            Sex VARCHAR(10)
+              )
+            "))
+
+dbClearResult(dbSendQuery(conn = con, statement = 
+                            "CREATE TABLE IF NOT EXISTS Stage(
+      Stage_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+      Stage VARCHAR(10)
+                        )"))
+
+dbClearResult(dbSendQuery(conn = con, statement = 
               "CREATE TABLE IF NOT EXISTS Users(
             User_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
             Role_id INT,
@@ -14,9 +33,9 @@ dbSendQuery(conn = con, statement =
             Email VARCHAR(50),
             Last_Seen DATETIME, 
             FOREIGN KEY (Role_id) REFERENCES Roles(Role_id)
-            )")
+            )"))
 
-dbSendQuery(conn = con, statement =  
+dbClearResult(dbSendQuery(conn = con, statement =  
               "CREATE TABLE IF NOT EXISTS Species(
             Species_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
             Genus VARCHAR(20),
@@ -31,9 +50,9 @@ dbSendQuery(conn = con, statement =
             Synonyms VARCHAR(100),
             Habitat VARCHAR(50),
             Remarks VARCHAR(100)
-            )")
+            )"))
 
-dbSendQuery(conn = con, statement = 
+dbClearResult(dbSendQuery(conn = con, statement = 
               "CREATE TABLE IF NOT EXISTS Locality(
             Locality_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
             Locality_Name VARCHAR(30),
@@ -49,37 +68,38 @@ dbSendQuery(conn = con, statement =
             UTM_grid VARCHAR(10),
             Altitude SMALLINT,
             Ecosystem VARCHAR(30),
-            Habitat_type VARCHAR(30),
+            Habitat_id INT,
+            FOREIGN KEY (Habitat_id) REFERENCES Habitat(Habitat_id) ,
             Bedrock VARCHAR(30)
-            )")
+            )"))
 
-dbSendQuery(conn = con, statement = 
+dbClearResult(dbSendQuery(conn = con, statement = 
               "CREATE TABLE IF NOT EXISTS Survey(
             Survey_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
             Date DATE,
             Sampling_unit VARCHAR(20),
             Collected_by VARCHAR(20)
-            )")
+            )"))
 
-dbSendQuery(conn = con, statement = 
+dbClearResult(dbSendQuery(conn = con, statement = 
               "CREATE TABLE IF NOT EXISTS Collection(
             Collection_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
             Collection VARCHAR(20),
             Inventary_Number VARCHAR(20),
             Specimen_Type VARCHAR(10),
             Determined_by VARCHAR(10)
-            )")
+            )"))
 
-dbSendQuery(conn = con, statement =
+dbClearResult(dbSendQuery(conn = con, statement =
               "CREATE TABLE IF NOT EXISTS Morphological_data(
             Morpho_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
             Geophilomorpha_leg_count TINYINT,
             Lithobiomorpha_leg_count TINYINT,
             Scolopendromorpha_leg_count TINYINT,
             Scutigeromorpha_leg_count TINYINT
-            )")
+            )"))
 
-dbSendQuery(conn = con, statement =
+dbClearResult(dbSendQuery(conn = con, statement =
               "CREATE TABLE IF NOT EXISTS Molecular_data(
             Molecular_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
             Marker_Type VARCHAR(20),
@@ -87,15 +107,17 @@ dbSendQuery(conn = con, statement =
             Sequencing_Type VARCHAR(20),
             Sequence_Length VARCHAR(5),
             Sequence TEXT
-            )")
+            )"))
 
-dbSendQuery(conn = con, statement = 
+dbClearResult(dbSendQuery(conn = con, statement = 
               "CREATE TABLE IF NOT EXISTS Specimen(
             Specimen_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
             Species_id INT,
             FOREIGN KEY(Species_id) REFERENCES Species(Species_id),
-            Sex VARCHAR(10),
-            Stage VARCHAR(10),
+            Sex_id INT,
+            FOREIGN KEY(Sex_id) REFERENCES Sex(Sex_id),
+            Stage_id INT,
+            FOREIGN KEY (Stage_id) REFERENCES Stage(Stage_id),
             Locality_id INT,
             FOREIGN KEY(Locality_id) REFERENCES Locality(Locality_id),
             Survey_id INT,
@@ -109,10 +131,4 @@ dbSendQuery(conn = con, statement =
             User_id INT,
             FOREIGN KEY(User_id) REFERENCES Users(User_id),
             Entry_Stamp TIMESTAMP
-            )")
-
-dbSendQuery(conn = con, statement = 
-              "CREATE TABLE IF NOT EXISTS Habitat(
-            Habitat_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-            Habitat_type VARCHAR(20)
-            )")
+            )"))
