@@ -9,4 +9,3 @@ con <- dbConnect(RMariaDB::MariaDB(),
                  dbname = "database", 
                  password = "password",
                  host = "00.000.000.00")
-

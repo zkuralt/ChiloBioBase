@@ -1,13 +1,12 @@
 # Load needed packages
 library(DBI)
-library(RSQLite)
-library(sqldf)
 library(DT)
 library(shiny)
 library(shinydashboard)
 library(leaflet)
-source("./mock_creds.R")
+source("./creds.R")
 source("./global.R")
+
 
 # Formatting header. Need to look into the dropdown menus.
 header <- dashboardHeader(title = "ChiloBioBase 2.0",
@@ -136,7 +135,6 @@ server <- function(input, output) {
     })
   })
   
-  
     output$downloadCSV <- downloadHandler(
       filename = function() { paste("chilo_query-", format(Sys.time(), "%Y%m%d_%H%M"), ".csv", sep = "") },
       content = function(file){
@@ -147,7 +145,7 @@ server <- function(input, output) {
     })
   
   
-  output$leaflet <- renderLeaflet({ # reloads map
+  output$leaflet <- renderLeaflet({
     leaflet() %>% 
       addProviderTiles(providers$Stamen.Terrain,
                        options = providerTileOptions(noWrap = TRUE)) %>%
