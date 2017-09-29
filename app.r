@@ -4,11 +4,13 @@ library(DT)
 library(shiny)
 library(shinydashboard)
 library(leaflet)
+library(htmltools)
 source("./creds.R")
+source("./about.R")
 source("./global.R")
 
 
-# Formatting header. Need to look into the dropdown menus.
+#### Formatting header. Need to look into the dropdown menus. ####
 header <- dashboardHeader(title = "ChiloBioBase 2.0",
                           dropdownMenu(type = "notifications", notificationItem(text = "4 records added today", icon("exclamation-triangle"))),
                           dropdownMenu(type = "tasks",
@@ -16,18 +18,19 @@ header <- dashboardHeader(title = "ChiloBioBase 2.0",
                                        taskItem(value = 4, color = "blue", "Setting up the database"),
                                        taskItem(value = 100, color = "green", "Records waiting for confirmation")))
 
-# Formatting sidebar. What would be the most practical structure of it?
+#### Formatting sidebar. What would be the most practical structure of it? ####
 sidebar <- dashboardSidebar(
   sidebarMenu(
     menuItem("About database", tabName = "about", icon = icon("database")),
     menuItem("Data input", tabName = "input", icon = icon("plus-circle")),
     menuItem("View data", tabName = "view", icon = icon("eye")),
+    menuItem("Taxon browser", tabName = "browser", icon = icon("search")),
     menuItem("Build query", tabName = "query", icon = icon("filter")),
     menuItem("Tables", tabName = "tables", icon = icon("sitemap"), badgeLabel = "Admin only", badgeColor = "blue")
   )
 )
 
-# Formatting page body. Not quite there yet ...
+#### Formatting page body. Not quite there yet. ####
 body <- dashboardBody(
   tabItems(
     tabItem(tabName = "about",
@@ -35,17 +38,19 @@ body <- dashboardBody(
             h3("Quick overview of the database"),
             br(),
             fluidRow(
-              infoBox(title = "Species", value = 76, icon = icon("bug"), color = "olive", width = 3),
-              infoBox(title = "Localities", value = 59, icon = icon("map-marker"), color = "yellow", width = 3),
-              infoBox(title = "Users", value = 6, icon = icon("group"), color = "light-blue", width = 3),
-              infoBox(title = "Records", value = 19358, icon = icon("list"), color = "purple", width = 3)
+              infoBox(title = "Species", value = uniqSpecies, icon = icon("bug"), color = "olive", width = 3),
+              infoBox(title = "Localities", value = uniqLocalities, icon = icon("map-marker"), color = "yellow", width = 3),
+              infoBox(title = "Users", value = uniqUsers, icon = icon("group"), color = "light-blue", width = 3),
+              infoBox(title = "Records", value = uniqRecords, icon = icon("list"), color = "purple", width = 3)
             ),
+            br(),
             fluidRow(
               box(title = "Quick filter", solidHeader = TRUE, height = 500, width = 4,
                   h5("Filter records displayed in map"),
                   selectInput(inputId = "filterSpecies", label = "Select species:", choices = specList),
-                  sliderInput("filterAltitude", "Altitude range:", min = 0, max = 2864, value = c(400,800), step = 100,
-                              sep = "", post = " m")
+                  sliderInput("filterAltitude", "Altitude range:", min = 0, max = 2864, value = c(0,2864), step = 100,
+                              sep = "", post = " m"),
+                  actionButton(inputId = "filterData", label = "Filter data")
                   # selectInput(inputId = "filterHabitat", label = "Habitat type", choices = habitatTypes, )
               ),
               box(solidHeader = TRUE, height = 500, width = 8,
@@ -74,6 +79,8 @@ body <- dashboardBody(
     ),
     tabItem(tabName = "view",
             h2("View data")),
+    tabItem(tabName = "browser",
+            h2("Taxon browser")),
     tabItem(tabName = "query",
             h2("Create query and download data"),
             fluidRow(
@@ -89,11 +96,11 @@ body <- dashboardBody(
 
 ui <- dashboardPage(header, sidebar, body, skin = "black")
 
-
+#### Server side ####
 server <- function(input, output) {
   
   output$ordoOut <- renderUI({
-    ordo <- input$ordo
+    ordo <- input$species
     if (ordo %in% "") {
       out <- h5("Select ordo")
     }
@@ -135,23 +142,40 @@ server <- function(input, output) {
     })
   })
   
-    output$downloadCSV <- downloadHandler(
-      filename = function() { paste("chilo_query-", format(Sys.time(), "%Y%m%d_%H%M"), ".csv", sep = "") },
-      content = function(file){
-        statement <- input$sqlQuery
-        x <- dbGetQuery(conn = con, statement = statement)
-        print(x)
-        write.table(x, file, row.names = FALSE, sep = ",", fileEncoding = "UTF-8")
+  output$downloadCSV <- downloadHandler(
+    filename = function() { paste("chilo_query-", format(Sys.time(), "%Y%m%d_%H%M"), ".csv", sep = "") },
+    content = function(file){
+      statement <- input$sqlQuery
+      x <- dbGetQuery(conn = con, statement = statement)
+      print(x)
+      write.table(x, file, row.names = FALSE, sep = ",", fileEncoding = "UTF-8")
     })
   
+  #### LEAFLET IN THE ABOUT TAB ####  
   
   output$leaflet <- renderLeaflet({
     leaflet() %>% 
       addProviderTiles(providers$Stamen.Terrain,
-                       options = providerTileOptions(noWrap = TRUE)) %>%
+                       options = providerTileOptions(noWrap = TRUE, detectRetina = TRUE, reuseTiles = TRUE)) %>%
       addScaleBar(position = "bottomleft", scaleBarOptions(metric = TRUE, imperial = FALSE)) %>% 
       setView(lng = 14.815333, lat = 46.119944, zoom = 8)
   })
+  
+ 
+  
+  filteredData <- reactive({
+    localityList[localityList$Altitude >= input$filterAltitude[1] & localityList$Altitude <= input$filterAltitude[2],]
+  })
+  
+  observe({
+    
+    leafletProxy("leaflet", data = filteredData()) %>%
+      clearMarkerClusters() %>% 
+      addMarkers(clusterOptions = markerClusterOptions(showCoverageOnHover = TRUE, zoomToBoundsOnClick = TRUE),
+                 layerId = "1",
+                 popup = filteredData()$Locality_Name)
+  })
+  
   
   onSessionEnded(function() {
     dbDisconnect(con)

@@ -7,6 +7,7 @@ speciesList$newname <- paste(speciesList$Genus,
 specList <- speciesList$Species_id
 names(specList) <- speciesList$newname
 specList <- c(" " = "", specList)
+ordoList <- unique(speciesList$Ordo)
 
 users <- dbReadTable(conn = con, name = "Users")
 users$newname <- paste(users$Name, users$Surname)
@@ -14,9 +15,8 @@ userList <- users$User_id
 names(userList) <- users$newname
 userList <- c(" " = "", userList)
 
-ordoList <- data.frame(Ordo = c("", "Lithobiomorpha", "Geophilomorpha",  "Scolopendromorpha", "Scutigeromorpha"))
-
-localityList <- data.frame(Locality = c("", "Medvedjak", "Draga pri Igu"))
+localityList <- dbReadTable(conn = con, name = "Locality")
+locList <- localityList$
 
 habitatTypes <- data.frame("Habitat type" = c("cave", "thermophilic", "psychrophilic"))
 
