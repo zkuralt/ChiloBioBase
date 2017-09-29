@@ -47,7 +47,7 @@ body <- dashboardBody(
             fluidRow(
               box(title = "Quick filter", solidHeader = TRUE, height = 500, width = 4,
                   h5("Filter records displayed in map"),
-                  selectInput(inputId = "filterSpecies", label = "Select species:", choices = specList),
+                  selectInput(inputId = "filterSpecies", label = "Select species:", choices = speciesList),
                   sliderInput("filterAltitude", "Altitude range:", min = 0, max = 2864, value = c(0,2864), step = 100,
                               sep = "", post = " m"),
                   actionButton(inputId = "filterData", label = "Filter data")
@@ -62,11 +62,11 @@ body <- dashboardBody(
             fluidRow(
               box(title = "Input form", solidHeader = TRUE,
                   selectInput(inputId = "ordo", label = "Select ordo:", choices = ordoList),
-                  selectInput(inputId = "species", label = "Select species:", choices = specList),
+                  selectInput(inputId = "species", label = "Select species:", choices = speciesList),
                   selectInput(inputId = "locality", label = "Select locality:", choices = localityList),
                   dateInput(inputId = "date", label = "Date of survey:", weekstart = 1, format = "dd. mm. yyyy"), ## naredi reaktivno, da izberejo popis na ta datum
                   selectInput(inputId = "sex", label = "Sex", choices = sexList),
-                  textInput(inputId = "stage", label = "Stage"),
+                  selectInput(inputId = "stage", label = "Stage", choices = stageList),
                   selectInput(inputId = "user", label = "Added by:", choices = userList)),
               box(title = "Morphological data input", solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                   uiOutput("ordoOut")),
@@ -100,7 +100,7 @@ ui <- dashboardPage(header, sidebar, body, skin = "black")
 server <- function(input, output) {
   
   output$ordoOut <- renderUI({
-    ordo <- input$species
+    ordo <- input$ordo
     if (ordo %in% "") {
       out <- h5("Select ordo")
     }
@@ -123,6 +123,7 @@ server <- function(input, output) {
     out
   })
   #### Querying database ####  
+  
   observeEvent(input$sendQuery, {
     output$queryResult <- DT::renderDataTable({
       statement <- input$sqlQuery
@@ -164,7 +165,7 @@ server <- function(input, output) {
   ### TO-DO: Enable filtering by Species
   
   filteredData <- reactive({
-    localityList[localityList$Altitude >= input$filterAltitude[1] & localityList$Altitude <= input$filterAltitude[2],]
+    locality[locality$Altitude >= input$filterAltitude[1] & locality$Altitude <= input$filterAltitude[2],]
   })
   
   observe({
