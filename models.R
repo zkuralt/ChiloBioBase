@@ -73,10 +73,10 @@ dbClearResult(dbSendQuery(conn = con, statement =
             Subspecies VARCHAR(20),
             Author_name VARCHAR(20),
             Author_brackets VARCHAR(10),
-            Author_year YEAR(4),
+            Author_year SMALLINT,
             Familia VARCHAR(20),
             Ordo VARCHAR(20),
-            Synonyms VARCHAR(100),
+            Synonyms TEXT,
             Habitat VARCHAR(50),
             Remarks VARCHAR(100)
             )"))

@@ -60,14 +60,15 @@ body <- dashboardBody(
     tabItem(tabName = "input",
             h2("Forms for new data input"),
             fluidRow(
-              box(title = "Input form", solidHeader = TRUE,
+              box(title = newSpecimen, solidHeader = TRUE,
                   selectInput(inputId = "ordo", label = "Select ordo:", choices = ordoList),
                   selectInput(inputId = "species", label = "Select species:", choices = speciesList),
                   selectInput(inputId = "locality", label = "Select locality:", choices = localityList),
                   dateInput(inputId = "date", label = "Date of survey:", weekstart = 1, format = "dd. mm. yyyy"), ## naredi reaktivno, da izberejo popis na ta datum
                   selectInput(inputId = "sex", label = "Sex", choices = sexList),
                   selectInput(inputId = "stage", label = "Stage", choices = stageList),
-                  selectInput(inputId = "user", label = "Added by:", choices = userList)),
+                  selectInput(inputId = "user", label = "Added by:", choices = userList),
+                  actionButton(inputId = "submitInput", label = "Submit", icon = icon("bug"), width = '100%')),
               box(title = "Morphological data input", solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                   uiOutput("ordoOut")),
               box(title = "Molecular data input", solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE),
@@ -80,17 +81,31 @@ body <- dashboardBody(
     tabItem(tabName = "view",
             h2("View data")),
     tabItem(tabName = "browser",
-            h2("Taxon browser")),
+            h2("Taxon browser"),
+            fluidRow(
+              box(title = "Record summary", solidHeader = TRUE,
+                  h5("Specimen_ID"))
+            )),
     tabItem(tabName = "query",
             h2("Create query and download data"),
             fluidRow(
-              box(title = "SQL query", solidHeader = TRUE, width = 12, collapsible = TRUE,
+              box(title = "Quick query", solidHeader = TRUE, width = 4, collapsible = TRUE, collapsed = TRUE,
+                  selectInput(inputId = "speciesQuery", label = "Query by specimen species", choices = speciesList ),
+                  selectInput(inputId = "localityQuery", label = "Query by specimen locality", choices = localityList),
+                  actionButton(inputId = "sendQuickQuery", label = "Send query")),
+              box(title = "Custom SQL query", solidHeader = TRUE, width = 8, collapsible = TRUE, collapsed = TRUE,
                   textInput(inputId = "sqlQuery", label = "", placeholder = "here goes your query"),
-                  actionButton(inputId = "sendQuery", label = "Send query"))),
+                  actionButton(inputId = "sendCustomQuery", label = "Send query"))),
             fluidRow(
               uiOutput("queryBox"))),
     tabItem(tabName = "tables",
-            h2("Edit relational tables"))
+            h2("Edit relational tables"),
+            box(title = "Localities", solidHeader = TRUE, collapsible = TRUE, width = 12,
+                dataTableOutput("localities")),
+            box(title = "Species", solidHeader = TRUE, collapsible = TRUE, width = 12,
+                dataTableOutput("species")),
+            box(title = "Surveys", solidHeader = TRUE, collapsible = TRUE, width = 12,
+                dataTableOutput("surveys")))
   )
 )
 
@@ -98,7 +113,25 @@ ui <- dashboardPage(header, sidebar, body, skin = "black")
 
 #### Server side ####
 server <- function(input, output) {
+  #### GET INPUT WORKING ####
   
+  #### Prepare tables for tables tab ####
+  output$localities <- DT::renderDataTable({
+    x <- dbGetQuery(conn = con, statement = "SELECT * FROM Locality;")
+    DT::datatable(x, options = list(scrolX = TRUE), fillContainer = TRUE)
+  })
+  
+  output$species <- DT::renderDataTable({
+    x <- dbGetQuery(conn = con, statement = "SELECT * FROM Species;")
+    DT::datatable(x, options = list(scrolX = TRUE), fillContainer = TRUE)
+  })
+  
+  output$surveys <- DT::renderDataTable({
+    x <- dbGetQuery(conn = con, statement = "SELECT * FROM Survey;")
+    DT::datatable(x, options = list(scrolX = TRUE), fillContainer = TRUE)
+  })
+  
+  #### Dynamic display of morphology input fields ####
   output$ordoOut <- renderUI({
     ordo <- input$ordo
     if (ordo %in% "") {
@@ -122,18 +155,73 @@ server <- function(input, output) {
     }
     out
   })
-  #### Querying database ####  
   
-  observeEvent(input$sendQuery, {
+  #### Querying database ####  TO-DO: Limit query expressions ####
+  
+  observeEvent(c(input$sendCustomQuery, input$sendQuickQuery), {
     output$queryResult <- DT::renderDataTable({
+      if (!is.null(input$sqlQuery)) {
       statement <- input$sqlQuery
+      } else {
+        if (!is.null(input$speciesQuery)) {
+        statement <- paste("
+                        SELECT * 
+                        FROM Specimen 
+                        JOIN Species
+                        ON Specimen.Species_id = Species.Species_id
+                        JOIN Sex
+                        ON Specimen.Sex_id = Sex.Sex_id
+                        JOIN Stage
+                        ON Specimen.Stage_id = Sex.Sex_id
+                        JOIN Locality
+                        ON Specimen.Locality_id = Locality.Locality_id
+                        JOIN Survey
+                        ON Specimen.Survey_id = Survey.Survey_id
+                        JOIN Collection
+                        ON Specimen.Collection_id = Collection.Collection_id
+                        JOIN Morphological_data
+                        ON Specimen.Morpho_id = Morphological_data.Morpho_id
+                        JOIN Molecular_data
+                        ON Specimen.Molecular_id = Molecular_data(Molecular_id)
+                        JOIN Users
+                        ON Specimen.User_id = Users.User_id
+                        WHERE Species.Species_id =", input$speciesQuery, sep = " ")
+        } else {
+          if (!is.null(input$localityQuery)) {
+            statement <- paste("
+                        SELECT * 
+                        FROM Specimen 
+                        JOIN Species
+                        ON Specimen.Species_id = Species.Species_id
+                        JOIN Sex
+                        ON Specimen.Sex_id = Sex.Sex_id
+                        JOIN Stage
+                        ON Specimen.Stage_id = Sex.Sex_id
+                        JOIN Locality
+                        ON Specimen.Locality_id = Locality.Locality_id
+                        JOIN Survey
+                        ON Specimen.Survey_id = Survey.Survey_id
+                        JOIN Collection
+                        ON Specimen.Collection_id = Collection.Collection_id
+                        JOIN Morphological_data
+                        ON Specimen.Morpho_id = Morphological_data.Morpho_id
+                        JOIN Molecular_data
+                        ON Specimen.Molecular_id = Molecular_data(Molecular_id)
+                        JOIN Users
+                        ON Specimen.User_id = Users.User_id
+                        WHERE Species.Species_id =", input$localityQuery, sep = " ")
+          }
+        }
+      }
       x <- dbGetQuery(conn = con, statement = statement)
-      DT::datatable(x, options = list(scrolX = TRUE))
+      DT::datatable(x, options = list(scrolX = TRUE), fillContainer = TRUE)
     })
     
     output$queryBox <- renderUI({
-      x <- input$sqlQuery
-      if (!is.null(x)) {
+      x1 <- input$sqlQuery
+      x2 <- input$speciesQuery
+      x3 <- input$localityQuery
+      if (!is.null(x1) | !is.null(x2) | !is.null(x3)) {
         box(solidHeader = TRUE, title = "Query result", width = 12,
             downloadButton(outputId = "downloadCSV", label = "Download data", icon = icon("download")),
             br(),
@@ -153,7 +241,6 @@ server <- function(input, output) {
     })
   
   #### LEAFLET IN THE ABOUT TAB ####  
-  
   output$leaflet <- renderLeaflet({
     leaflet() %>% 
       addProviderTiles(providers$Stamen.Terrain,

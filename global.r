@@ -1,9 +1,12 @@
+#### Prepare data for selectInput ####
+nSpecimens <- dbGetQuery(conn = con, statement = "SELECT COUNT(DISTINCT Specimen_ID) FROM Specimen;")
+newSpecimen <- paste("Specimen_id", "=", (nSpecimens + 1), sep = " ")
 Species <- dbReadTable(conn = con, name = "Species")
 Species$newname <- paste(Species$Genus, 
                          Species$Species, 
-                                          ifelse (Species$Subspecies == "", 
-                                                  Species$Subspecies, 
-                                                  paste(Species$Subspecies)))
+                         ifelse (Species$Subspecies == "", 
+                                 Species$Subspecies, 
+                                 paste(Species$Subspecies)))
 speciesList <- Species$Species_id
 names(speciesList) <- Species$newname
 speciesList <- c(" " = "", speciesList)
@@ -36,3 +39,29 @@ sex <- dbReadTable(conn = con, name = "Sex")
 sexList <- sex$Sex_id
 names(sexList) <- sex$Sex
 sexList <- c(" " = "", sexList)
+
+#### Prepare data for Quick query ####
+    # statement = paste(" SELECT * 
+    #                     FROM Specimen 
+    #                     JOIN Species
+    #                     ON Specimen.Species_id = Species.Species_id
+    #                     JOIN Sex
+    #                     ON Specimen.Sex_id = Sex.Sex_id
+    #                     JOIN Stage
+    #                     ON Specimen.Stage_id = Sex.Sex_id
+    #                     JOIN Locality
+    #                     ON Specimen.Locality_id = Locality.Locality_id
+    #                     JOIN Survey
+    #                     ON Specimen.Survey_id = Survey.Survey_id
+    #                     JOIN Collection
+    #                     ON Specimen.Collection_id = Collection.Collection_id
+    #                     JOIN Morphological_data
+    #                     ON Specimen.Morpho_id = Morphological_data.Morpho_id
+    #                     JOIN Molecular_data
+    #                     ON Specimen.Molecular_id = Molecular_data(Molecular_id)
+    #                     JOIN Users
+    #                     ON Specimen.User_id = Users.User_id
+    #                     WHERE Species.Species_id =", input$speciesQuery, sep = "")
+
+
+
