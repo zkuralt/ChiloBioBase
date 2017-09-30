@@ -157,14 +157,14 @@ server <- function(input, output) {
   })
   
   #### Querying database ####  TO-DO: Limit query expressions ####
-  
+  ## https://stackoverflow.com/questions/9853586/how-can-i-join-multiple-sql-tables-using-the-ids ##
   observeEvent(c(input$sendCustomQuery, input$sendQuickQuery), {
     output$queryResult <- DT::renderDataTable({
       if (!is.null(input$sqlQuery)) {
       statement <- input$sqlQuery
       } else {
         if (!is.null(input$speciesQuery)) {
-        statement <- paste("
+        statement <- paste("   
                         SELECT * 
                         FROM Specimen 
                         JOIN Species
