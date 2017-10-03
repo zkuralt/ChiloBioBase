@@ -87,11 +87,12 @@ dbClearResult(dbSendQuery(conn = con, statement =
             Locality_Name VARCHAR(30),
             Locality_PlaceNear VARCHAR(30),
             Locality_OtherNames VARCHAR(30),
-            Country VARCHAR(20),
+            Country_id INT,
+            FOREIGN KEY (Country_id) REFERENCES Country(Country_id),
             Original_X DECIMAL(8,2),
             Original_Y DECIMAL(8,2),
             Original_Projection_id INT,
-            FOREIGN KEY(Original_Projection_id) REFERENCES Original_Projection(Original_Projection_id),
+            FOREIGN KEY (Original_Projection_id) REFERENCES Original_Projection(Original_Projection_id),
             Latitude DECIMAL(8,6),
             Longitude DECIMAL(8,6),
             Accuracy TINYINT,
@@ -101,7 +102,7 @@ dbClearResult(dbSendQuery(conn = con, statement =
             Ecosystem_id INT,
             FOREIGN KEY (Ecosystem_id) REFERENCES Ecosystem(Ecosystem_id),
             Habitat_id INT,
-            FOREIGN KEY (Habitat_id) REFERENCES Habitat(Habitat_id) ,
+            FOREIGN KEY (Habitat_id) REFERENCES Habitat(Habitat_id),
             Bedrock_id INT,
             FOREIGN KEY (Bedrock_id) REFERENCES Bedrock(Bedrock_id)
             )"))
