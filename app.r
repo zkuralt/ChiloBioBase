@@ -1,6 +1,7 @@
 # Load needed packages
 library(DBI)
 library(DT)
+library(rhandsontable)
 library(shiny)
 library(shinydashboard)
 library(leaflet)
@@ -101,11 +102,14 @@ body <- dashboardBody(
     tabItem(tabName = "tables",
             h2("Edit relational tables"),
             box(title = "Localities", solidHeader = TRUE, collapsible = TRUE, width = 12,
-                dataTableOutput("localities")),
+                actionButton(inputId = "add_locality", label = "Add locality"),
+                br(),
+                br(),
+                rHandsontableOutput("localities")),
             box(title = "Species", solidHeader = TRUE, collapsible = TRUE, width = 12,
-                dataTableOutput("species")),
+                rHandsontableOutput("species")),
             box(title = "Surveys", solidHeader = TRUE, collapsible = TRUE, width = 12,
-                dataTableOutput("surveys")))
+                rHandsontableOutput("surveys")))
   )
 )
 
@@ -135,19 +139,19 @@ server <- function(input, output) {
   })
   
   #### Prepare tables for tables tab ####
-  output$localities <- DT::renderDataTable({
+  output$localities <- renderRHandsontable({
     x <- dbGetQuery(conn = con, statement = "SELECT * FROM Locality;")
-    DT::datatable(x, options = list(scrolX = TRUE), fillContainer = TRUE)
+    rhandsontable(x)
   })
   
-  output$species <- DT::renderDataTable({
+  output$species <- renderRHandsontable({
     x <- dbGetQuery(conn = con, statement = "SELECT * FROM Species;")
-    DT::datatable(x, options = list(scrolX = TRUE), fillContainer = TRUE)
+    rhandsontable(x)
   })
   
-  output$surveys <- DT::renderDataTable({
+  output$surveys <- renderRHandsontable({
     x <- dbGetQuery(conn = con, statement = "SELECT * FROM Survey;")
-    DT::datatable(x, options = list(scrolX = TRUE), fillContainer = TRUE)
+    rhandsontable(x)
   })
   
   #### Dynamic display of morphology input fields ####
