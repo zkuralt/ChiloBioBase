@@ -99,6 +99,42 @@ dbWriteTable(conn = con,
              value = species,
              append = TRUE)
 
+survey <- data.frame(Date = Sys.Date(),
+                     Sampling_unit = "6",
+                     Collected_by = "Franc Kljun")
+dbWriteTable(conn = con,
+             name = "Survey",
+             value = survey,
+             append = TRUE)
+
+collection <- data.frame(Collection = "Oddelek za biologijo",
+                         Inventary_Number = "12345",
+                         Specimen_Type = "AP",
+                         Determined_by = "Ivan Kos")
+dbWriteTable(conn = con,
+             name = "Collection",
+             value = collection,
+             append = TRUE)
+
+morpho <- data.frame(Geophilomorpha_leg_count = 165,
+                     Lithobiomorpha_leg_count = 15,
+                     Scolopendromorpha_leg_count = 21,
+                     Scutigeromorpha_leg_count = 15)
+dbWriteTable(conn = con,
+             name = "Morphological_data",
+             value = morpho,
+             append = TRUE)
+
+molecular <- data.frame(Marker_Type = "CO1",
+                        Sample_Type = "leg tissue",
+                        Sequencing_Type = "Sanger",
+                        Sequence_Length = 635,
+                        Sequence = "agtctcgtaaaaactgct")
+dbWriteTable(conn = con,
+             name = "Molecular_data",
+             value = molecular,
+             append = TRUE)
+
 habitat <- data.frame(Habitat_type = c("Deciduous forest", "Wetland", "Meadow", "Karstic meadow", "Mixed forest"))
 dbWriteTable(conn = con, name = "Habitat", value = habitat, append = TRUE)
 
@@ -170,3 +206,20 @@ dbWriteTable(conn = con,
              name = "Locality",
              value = localities,
              append = TRUE)
+
+
+specimen <- data.frame(Species_id = 1,
+                       Sex_id = 1,
+                       Stage_id = 2,
+                       Locality_id = 2,
+                       Survey_id = 1,
+                       Collection_id = 1,
+                       Morpho_id = 1,
+                       Molecular_id = 1,
+                       User_id = 2,
+                       Entry_Stamp = format(Sys.time(), "%Y%m%d_%H%M"))
+dbWriteTable(conn = con,
+             name = "Specimen",
+             value = specimen,
+             append = TRUE)
+
