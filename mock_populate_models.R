@@ -101,7 +101,7 @@ dbWriteTable(conn = con,
 
 survey <- data.frame(Date = Sys.Date(),
                      Sampling_unit = "6",
-                     Collected_by = "Franc Kljun")
+                     Collected_by = "Franko Frkić")
 dbWriteTable(conn = con,
              name = "Survey",
              value = survey,
