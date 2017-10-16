@@ -15,7 +15,6 @@ observeEvent(input$sendCustomQuery, {
   
   if (nchar(statement) > 0) {
     output$displayQuery <- renderUI({
-      # downloadButton(outputId = "downloadCSV", label = "Download data", icon = icon("download"))
       dataTableOutput("queryResult")
     })
   } else {
