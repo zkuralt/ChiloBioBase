@@ -23,8 +23,8 @@ source("body.R", local = TRUE)
 
 ui <- dashboardPage(header, sidebar, body, skin = "black")
 
+#### Server side ####
 server <- function(input, output) {
-  
   #### About ####  
   #### Data explorer ####
   source("explore_map.R", local = TRUE)
@@ -41,7 +41,7 @@ server <- function(input, output) {
   #### Querying database ####  TO-DO: Limit query expressions ####
   source("build_query.R", local = TRUE)
   
-  #### Prepare tables for tables tab ####
+  #### Tables ####
   source("manage_tables.R", local = TRUE)
   
   #### End session ####
