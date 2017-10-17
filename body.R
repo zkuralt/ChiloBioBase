@@ -1,8 +1,12 @@
 body <- dashboardBody(
+  tags$style(type = "text/css", "#map {height: 100% !important;}"),
   tabItems(
     tabItem(tabName = "about",
-            h2("This is a MariaDB relational database of Chilopoda"),
-            h3("Quick overview of the database"),
+            h2("This is a MariaDB relational database of Chilopoda collected in Slovenia"),
+            br(),
+            p("Some text"),
+            br(),
+            h3("Database summary"),
             br(),
             fluidRow(
               infoBox(title = "Species", value = uniqSpecies, icon = icon("bug"), color = "olive", width = 3),
@@ -10,18 +14,40 @@ body <- dashboardBody(
               infoBox(title = "Users", value = uniqUsers, icon = icon("group"), color = "light-blue", width = 3),
               infoBox(title = "Records", value = uniqRecords, icon = icon("list"), color = "purple", width = 3)
             ),
-            br(),
             fluidRow(
-              box(title = "Quick filter", solidHeader = TRUE, height = 500, width = 4,
-                  h5("Filter records displayed in map"),
-                  selectInput(inputId = "filterSpecies", label = "Select species:", choices = speciesList),
-                  sliderInput("filterAltitude", "Altitude range:", min = 0, max = 2864, value = c(0,2864), step = 100,
-                              sep = "", post = " m"),
-                  actionButton(inputId = "filterData", label = "Filter data")
-                  # selectInput(inputId = "filterHabitat", label = "Habitat type", choices = habitatTypes, )
-              ),
-              box(solidHeader = TRUE, height = 500, width = 8,
-                  leafletOutput("leaflet", height = 480))
+              infoBox(title = "Most common species", value = "Lithobius stygius", icon = icon("paw"), color = "red", width = 3),
+              infoBox(title = "Date range", value = "1. 1. 1900 - 31. 12. 2017", icon = icon("calendar"), color = "maroon", width = 3),
+              infoBox(title = "Some statistic", value = "42", icon = icon("university"), color = "green", width = 3),
+              infoBox(title = "Some statistic", value = "26", icon = icon("tree"), color = "navy", width = 3)
+              
+            )
+    ),
+    
+    tabItem(tabName = "explore",
+            div(class="outer",
+                tags$head(
+                  # Include custom CSS
+                  includeCSS("styles.css")
+                ),
+                leafletOutput("map"),
+                absolutePanel(id = "controls", 
+                              class = "panel panel-default", 
+                              fixed = TRUE,
+                              draggable = TRUE, 
+                              top = 60, 
+                              left = "auto", 
+                              right = 20, 
+                              bottom = "auto",
+                              width = 330, 
+                              height = "auto",
+                              sliderInput("filterAltitude", "Altitude range:", 
+                                          min = 0, 
+                                          max = 2864, 
+                                          value = c(100,1700), 
+                                          step = 100,
+                                          sep = "", 
+                                          post = " m")
+                )
             )
     ),
     
@@ -36,38 +62,74 @@ body <- dashboardBody(
                   selectInput(inputId = "sex", label = "Sex", choices = sexList),
                   selectInput(inputId = "stage", label = "Stage", choices = stageList),
                   selectInput(inputId = "user", label = "Added by:", choices = userList),
-                  actionButton(inputId = "submitInput", label = "Submit", icon = icon("bug"), width = '100%')),
+                  actionButton(inputId = "submitInput", label = "Submit", icon = icon("bug"), width = '100%')
+              ),
               box(title = "Morphological data input", solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
-                  uiOutput("ordoOut")),
+                  uiOutput("ordoOut")
+              ),
               box(title = "Molecular data input", solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE),
               box(title = "Photo data input", solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                   fileInput(inputId = "picture", multiple = TRUE, buttonLabel = "Submit pictures", 
                             accept=c('image/jpeg', 'image/png', 'image/bmp'), label = "Add pictures",
-                            placeholder = "No file selected"))
+                            placeholder = "No file selected")
+              )
             )
     ),
-    tabItem(tabName = "view",
-            h2("View data")),
     
     tabItem(tabName = "browser",
-            h2("Taxon browser"),
             fluidRow(
-              box(title = "Record summary", solidHeader = TRUE,
-                  h5("Specimen_ID"))
-            )),
+              h4("Current record: 4"),
+              actionButton(inputId = "previous", label = "Previous record", icon = icon("arrow-circle-o-left")),
+              actionButton(inputId = "next", label = "Next record", icon = icon("arrow-circle-o-right"))
+            ),
+            br(),
+            fluidRow(
+              tabBox(width = 6,
+                     tabPanel(title = "Record summary",
+                              h5("Species"),
+                              h5("Sex"),
+                              h5("Stage")
+                     ),
+                     tabPanel(title = "Locality info",
+                              h5("Locality name"),
+                              h5("Altitude"),
+                              h5("Ecosystem"),
+                              h5("Habitat")
+                     )
+              ),
+              tabBox(width = 6,
+                     tabPanel(title = "Morphology",
+                              p("leg count"),
+                              p("head width")
+                     ),
+                     tabPanel(title = "Molecular data",
+                              p("CO1"),
+                              p("Sequencing type")
+                     )
+              )
+            ),
+            fluidRow(
+              box(title = "Photos", solidHeader = TRUE,
+                  imageOutput("image"))
+            )
+    ),
     
     tabItem(tabName = "query",
             h2("Create query and download data"),
             fluidRow(
               box(title = "Quick query", solidHeader = TRUE, width = 4, collapsible = TRUE, collapsed = TRUE,
                   selectInput(inputId = "speciesQuery", label = "Query by specimen species", choices = speciesList ),
-                  selectInput(inputId = "localityQuery", label = "Query by specimen locality", choices = localityList),
+                  # selectInput(inputId = "localityQuery", label = "Query by specimen locality", choices = localityList),
                   actionButton(inputId = "sendQuickQuery", label = "Send query")),
               box(title = "Custom SQL query", solidHeader = TRUE, width = 8, collapsible = TRUE, collapsed = TRUE,
                   textInput(inputId = "sqlQuery", label = "", placeholder = "here goes your query"),
-                  actionButton(inputId = "sendCustomQuery", label = "Send query"))),
+                  actionButton(inputId = "sendCustomQuery", label = "Send query")
+              )
+            ),
             fluidRow(
-              uiOutput("displayQuery"))),
+              uiOutput("displayQuery")
+            )
+    ),
     
     tabItem(tabName = "tables",
             h2("Edit relational tables"),
@@ -75,10 +137,14 @@ body <- dashboardBody(
                 actionButton(inputId = "add_locality", label = "Add locality"),
                 br(),
                 br(),
-                rHandsontableOutput("localities")),
+                rHandsontableOutput("localities")
+            ),
             box(title = "Species", solidHeader = TRUE, collapsible = TRUE, width = 12,
-                rHandsontableOutput("species")),
+                rHandsontableOutput("species")
+            ),
             box(title = "Surveys", solidHeader = TRUE, collapsible = TRUE, width = 12,
-                rHandsontableOutput("surveys")))
+                rHandsontableOutput("surveys")
+            )
+    )
   )
 )

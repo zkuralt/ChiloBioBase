@@ -6,9 +6,11 @@ library(shiny)
 library(shinydashboard)
 library(leaflet)
 library(htmltools)
+library(jpeg)
 
-source("./creds.R")
-source("./global.R")
+source("./creds.R", local = TRUE)
+source("./about.R", local = TRUE)
+source("./global.R", local = TRUE)
 
 #### Header ####
 source("header.R", local = TRUE)
@@ -24,17 +26,18 @@ ui <- dashboardPage(header, sidebar, body, skin = "black")
 server <- function(input, output) {
   
   #### About ####  
-  # Leaflet
-  source("about_leaflet.R", local = TRUE)
-  # InfoBoxes
-  source("./about.R", local = TRUE)
+  #### Data explorer ####
+  source("explore_map.R", local = TRUE)
   
-  #### Data input form ####
+  #### Data input ####
+  # Input form
   source("input_form.R", local = TRUE)
   
-  #### Dynamic display of morphology input fields ####
+  # Dynamic display of morphology input fields 
   source("input_form_morphology.R", local = TRUE)
   
+  #### Records browser ####
+  source("browser.R", local = TRUE)
   #### Querying database ####  TO-DO: Limit query expressions ####
   source("build_query.R", local = TRUE)
   

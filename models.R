@@ -71,6 +71,7 @@ dbClearResult(dbSendQuery(conn = con, statement =
             Subgenus VARCHAR(20),
             Species VARCHAR(20),
             Subspecies VARCHAR(20),
+            Full_name VARCHAR(100),
             Author_name VARCHAR(20),
             Author_brackets VARCHAR(10),
             Author_year SMALLINT,

@@ -8,20 +8,3 @@ output$leaflet <- renderLeaflet({
 
 ### TO-DO: Enable filtering by Species
 
-filteredData <- reactive({
-  locality[locality$Altitude >= input$filterAltitude[1] & locality$Altitude <= input$filterAltitude[2],]
-})
-
-observe({
-  leafletProxy("leaflet", data = filteredData()) %>%
-    clearMarkerClusters() %>% 
-    addCircleMarkers(color = "black", 
-                     weight = 1, 
-                     radius = 5, 
-                     fill = TRUE, 
-                     fillColor = "black", 
-                     fillOpacity = 0.4, 
-                     clusterOptions = markerClusterOptions(showCoverageOnHover = TRUE, 
-                                                           zoomToBoundsOnClick = TRUE),
-                     popup = filteredData()$Locality_Name)
-})

@@ -1,6 +1,6 @@
 #### Prepare data for selectInput ####
-nSpecimens <- as.integer(dbGetQuery(conn = con, statement = "SELECT COUNT(*) FROM Specimen;"))
-newSpecimen <- paste("Specimen_id", "=", (nSpecimens + 1), sep = " ")
+nSpecimens <- as.integer(dbGetQuery(conn = con, statement = "SELECT COUNT(*) FROM Specimen;")[1, 1])
+newSpecimen <- paste("Specimen id:", (nSpecimens + 1), sep = " ")
 Species <- dbReadTable(conn = con, name = "Species")
 Species$newname <- paste(Species$Genus, 
                          Species$Species, 
