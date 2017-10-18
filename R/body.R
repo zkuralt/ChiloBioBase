@@ -27,7 +27,7 @@ body <- dashboardBody(
             div(class="outer",
                 tags$head(
                   # Include custom CSS
-                  includeCSS("styles.css")
+                  includeCSS("./css/styles.css")
                 ),
                 leafletOutput("map"),
                 absolutePanel(id = "controls", 
@@ -55,7 +55,6 @@ body <- dashboardBody(
             h2("Forms for new data input"),
             fluidRow(
               box(title = newSpecimen, solidHeader = TRUE,
-                  selectInput(inputId = "ordo", label = "Select ordo:", choices = ordoList),
                   selectInput(inputId = "species", label = "Select species:", choices = speciesList),
                   selectInput(inputId = "locality", label = "Select locality:", choices = localityList),
                   dateInput(inputId = "date", label = "Date of survey:", weekstart = 1, format = "dd. mm. yyyy"), ## naredi reaktivno, da izberejo popis na ta datum
@@ -64,9 +63,7 @@ body <- dashboardBody(
                   selectInput(inputId = "user", label = "Added by:", choices = userList),
                   actionButton(inputId = "submitInput", label = "Submit", icon = icon("bug"), width = '100%')
               ),
-              box(title = "Morphological data input", solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
-                  uiOutput("ordoOut")
-              ),
+              uiOutput("ordoOut"),
               box(title = "Molecular data input", solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE),
               box(title = "Photo data input", solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                   fileInput(inputId = "picture", multiple = TRUE, buttonLabel = "Submit pictures", 

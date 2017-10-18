@@ -126,12 +126,27 @@ dbClearResult(dbSendQuery(conn = con, statement =
             )"))
 
 dbClearResult(dbSendQuery(conn = con, statement =
-                            "CREATE TABLE IF NOT EXISTS Morphological_data(
+                            "CREATE TABLE IF NOT EXISTS Geophilo_morpho(
             Morpho_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-            Geophilomorpha_leg_count TINYINT,
-            Lithobiomorpha_leg_count TINYINT,
-            Scolopendromorpha_leg_count TINYINT,
-            Scutigeromorpha_leg_count TINYINT
+            Leg_count TINYINT,
+            )"))
+
+dbClearResult(dbSendQuery(conn = con, statement =
+                            "CREATE TABLE IF NOT EXISTS Lithobio_morpho(
+            Morpho_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            Leg_count TINYINT,
+            )"))
+
+dbClearResult(dbSendQuery(conn = con, statement =
+                            "CREATE TABLE IF NOT EXISTS Scutigero_morpho(
+            Morpho_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            Leg_count TINYINT
+            )"))
+
+dbClearResult(dbSendQuery(conn = con, statement =
+                            "CREATE TABLE IF NOT EXISTS Scolopendro_morpho(
+            Morpho_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            Leg_count TINYINT,
             )"))
 
 dbClearResult(dbSendQuery(conn = con, statement =
