@@ -126,15 +126,25 @@ dbClearResult(dbSendQuery(conn = con, statement =
             )"))
 
 dbClearResult(dbSendQuery(conn = con, statement =
+                            "CREATE TABLE IF NOT EXISTS Morphological_data(
+                          Morpho_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                          Geophilo_id INT,
+                          Lithobio_id INT,
+                          Scolopendro_id INT,
+                          Scutigero_id INT
+                      
+)"))
+
+dbClearResult(dbSendQuery(conn = con, statement =
                             "CREATE TABLE IF NOT EXISTS Geophilo_morpho(
             Morpho_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-            Leg_count TINYINT,
+            Leg_count TINYINT
             )"))
 
 dbClearResult(dbSendQuery(conn = con, statement =
                             "CREATE TABLE IF NOT EXISTS Lithobio_morpho(
             Morpho_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-            Leg_count TINYINT,
+            Leg_count TINYINT
             )"))
 
 dbClearResult(dbSendQuery(conn = con, statement =
@@ -146,7 +156,7 @@ dbClearResult(dbSendQuery(conn = con, statement =
 dbClearResult(dbSendQuery(conn = con, statement =
                             "CREATE TABLE IF NOT EXISTS Scolopendro_morpho(
             Morpho_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-            Leg_count TINYINT,
+            Leg_count TINYINT
             )"))
 
 dbClearResult(dbSendQuery(conn = con, statement =
@@ -180,5 +190,5 @@ dbClearResult(dbSendQuery(conn = con, statement =
             FOREIGN KEY(Molecular_id) REFERENCES Molecular_data(Molecular_id),
             User_id INT,
             FOREIGN KEY(User_id) REFERENCES Users(User_id),
-            Entry_Stamp TIMESTAMP
+            Entry_Stamp DATETIME
             )"))

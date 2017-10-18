@@ -57,11 +57,12 @@ body <- dashboardBody(
               box(title = newSpecimen, solidHeader = TRUE,
                   selectInput(inputId = "species", label = "Select species:", choices = speciesList),
                   selectInput(inputId = "locality", label = "Select locality:", choices = localityList),
-                  dateInput(inputId = "date", label = "Date of survey:", weekstart = 1, format = "dd. mm. yyyy"), ## naredi reaktivno, da izberejo popis na ta datum
+                  dateInput(inputId = "date", label = "Date of survey:", weekstart = 1, format = "dd. mm. yyyy"),
+                  selectInput(inputId = "survey", label = "Survey", choices = surveyList),
+                  selectInput(inputId = "collection", label = "Collection", choices = collectionList),
                   selectInput(inputId = "sex", label = "Sex", choices = sexList),
-                  selectInput(inputId = "stage", label = "Stage", choices = stageList),
                   selectInput(inputId = "user", label = "Added by:", choices = userList),
-                  actionButton(inputId = "submitInput", label = "Submit", icon = icon("bug"), width = '100%')
+                  actionButton(inputId = "submitInput", label = "Submit", icon = icon("bug"))
               ),
               uiOutput("ordoOut"),
               box(title = "Molecular data input", solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE),

@@ -1,6 +1,5 @@
 output$ordoOut <- renderUI({
   species <- input$species
-  
   if (nchar(species) == 0 ) { 
     out <- box(title = "Morphological data input", solidHeader = TRUE, collapsible = TRUE, collapsed = FALSE,
                h5("Select species first")

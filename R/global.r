@@ -25,6 +25,16 @@ localityList <- locality$Locality_id
 names(localityList) <- locality$Locality_Name
 localityList <- c(" " = "", localityList)
 
+collection <- dbReadTable(conn = con, name = "Collection")
+collectionList <- collection$Collection_id
+names(collectionList) <- collection$Collection
+collectionList <- c(" " = "", collectionList)
+
+survey <- dbReadTable(conn = con, name = "Survey")
+surveyList <- survey$Survey_id
+names(surveyList) <- survey$Sampling_unit
+surveyList <- c(" " = "", surveyList)
+
 habitat <- dbReadTable(conn = con, name = "Habitat")
 habitatList <- habitat$Habitat_id
 names(habitatList) <- habitat$Habitat_type
