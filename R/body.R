@@ -1,4 +1,5 @@
 body <- dashboardBody(
+  useShinyjs(),
   tags$style(type = "text/css", "#map {height: 100% !important;}"),
   tabItems(
     tabItem(tabName = "about",
@@ -8,19 +9,8 @@ body <- dashboardBody(
             br(),
             h3("Database summary"),
             br(),
-            fluidRow(
-              infoBox(title = "Species", value = uniqSpecies, icon = icon("bug"), color = "olive", width = 3),
-              infoBox(title = "Localities", value = uniqLocalities, icon = icon("map-marker"), color = "yellow", width = 3),
-              infoBox(title = "Users", value = uniqUsers, icon = icon("group"), color = "light-blue", width = 3),
-              infoBox(title = "Records", value = uniqRecords, icon = icon("list"), color = "purple", width = 3)
-            ),
-            fluidRow(
-              infoBox(title = "Most common species", value = "Lithobius stygius", icon = icon("paw"), color = "red", width = 3),
-              infoBox(title = "Date range", value = "1. 1. 1900 - 31. 12. 2017", icon = icon("calendar"), color = "maroon", width = 3),
-              infoBox(title = "Some statistic", value = "42", icon = icon("university"), color = "green", width = 3),
-              infoBox(title = "Some statistic", value = "26", icon = icon("tree"), color = "navy", width = 3)
-              
-            )
+            uiOutput("stats")
+            
     ),
     
     tabItem(tabName = "explore",
@@ -55,14 +45,27 @@ body <- dashboardBody(
             h2("Forms for new data input"),
             fluidRow(
               box(title = newSpecimen, solidHeader = TRUE,
-                  selectInput(inputId = "species", label = "Select species:", choices = speciesList),
-                  selectInput(inputId = "locality", label = "Select locality:", choices = localityList),
-                  dateInput(inputId = "date", label = "Date of survey:", weekstart = 1, format = "dd. mm. yyyy"),
-                  selectInput(inputId = "survey", label = "Survey", choices = surveyList),
-                  selectInput(inputId = "collection", label = "Collection", choices = collectionList),
-                  selectInput(inputId = "sex", label = "Sex", choices = sexList),
-                  selectInput(inputId = "user", label = "Added by:", choices = userList),
-                  actionButton(inputId = "submitInput", label = "Submit", icon = icon("bug"))
+                  div(
+                    id = "inputForm",
+                    selectInput(inputId = "species", label = "Select species:", choices = speciesList),
+                    selectInput(inputId = "locality", label = "Select locality:", choices = localityList),
+                    dateInput(inputId = "date", label = "Date of survey:", weekstart = 1, format = "dd. mm. yyyy"),
+                    selectInput(inputId = "survey", label = "Survey", choices = surveyList),
+                    selectInput(inputId = "collection", label = "Collection", choices = collectionList),
+                    selectInput(inputId = "sex", label = "Sex", choices = sexList),
+                    selectInput(inputId = "user", label = "Added by:", choices = userList)
+                  ),
+                  fluidRow(
+                    column(width = 3, offset = 2,
+                    actionButton(inputId = "submitInput", label = "Submit", icon = icon("bug"))
+                    ),
+                    column(width = 3, offset = 2,
+                           tags$head(
+                             tags$style(HTML('#resetForm{background-color:orange}'))
+                           ),
+                    actionButton(inputId = "resetForm", label = "Reset form")
+                    )
+                  )
               ),
               uiOutput("ordoOut"),
               box(title = "Molecular data input", solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE),

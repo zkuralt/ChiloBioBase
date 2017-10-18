@@ -1,10 +1,11 @@
 # Load needed packages
+library(shinydashboard)
+library(shiny)
+library(shinyjs)
+library(leaflet)
 library(DBI)
 library(DT)
 library(rhandsontable)
-library(shiny)
-library(shinydashboard)
-library(leaflet)
 library(htmltools)
 library(jpeg)
 
@@ -26,7 +27,7 @@ ui <- dashboardPage(header, sidebar, body, skin = "black")
 #### Server side ####
 server <- function(input, output) {
   #### About ####  
-  
+  source("./R/database_summary.R", local = TRUE)
   #### Data explorer ####
   source("./R/explore_map.R", local = TRUE)
   
