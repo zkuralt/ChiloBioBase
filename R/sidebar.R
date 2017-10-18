@@ -7,7 +7,6 @@ sidebar <- dashboardSidebar(
     menuItem("Build query", tabName = "query", icon = icon("filter")),
     menuItem("Settings", tabName = "settings", icon = icon("cogs")),
     menuItem("How-to", tabName = "howto", icon = icon("question-circle-o")),
-    menuItem("Tables", tabName = "tables", icon = icon("sitemap"), badgeColor = "blue", badgeLabel = "Admin only")
-    
+    menuItem("Tables", tabName = "tables", icon = icon("sitemap"))
   )
 )
