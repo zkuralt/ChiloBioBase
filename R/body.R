@@ -132,6 +132,16 @@ body <- dashboardBody(
             )
     ),
     
+    tabItem(tabName = "settings",
+            h2("Here come settings")
+    ),
+    
+    tabItem(tabName = "howto",
+            fluidPage(
+            uiOutput("howto")
+            )
+    ),
+    
     tabItem(tabName = "tables",
             h2("Edit relational tables"),
             box(title = "Localities", solidHeader = TRUE, collapsible = TRUE, width = 12,

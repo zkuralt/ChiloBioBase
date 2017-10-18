@@ -137,25 +137,34 @@ dbClearResult(dbSendQuery(conn = con, statement =
 
 dbClearResult(dbSendQuery(conn = con, statement =
                             "CREATE TABLE IF NOT EXISTS Geophilo_morpho(
-            Morpho_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            Geophilo_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            Morpho_id INT,
+            FOREIGN KEY (Morpho_id) REFERENCES Morphological_data(Morpho_id),
+            Locality_id INT,
             Leg_count TINYINT
             )"))
 
 dbClearResult(dbSendQuery(conn = con, statement =
                             "CREATE TABLE IF NOT EXISTS Lithobio_morpho(
-            Morpho_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            Lithobio_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            Morpho_id INT,
+            FOREIGN KEY (Morpho_id) REFERENCES Morphological_data(Morpho_id),
             Leg_count TINYINT
             )"))
 
 dbClearResult(dbSendQuery(conn = con, statement =
                             "CREATE TABLE IF NOT EXISTS Scutigero_morpho(
-            Morpho_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            Scutigero_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            Morpho_id INT,
+            FOREIGN KEY (Morpho_id) REFERENCES Morphological_data(Morpho_id),
             Leg_count TINYINT
             )"))
 
 dbClearResult(dbSendQuery(conn = con, statement =
                             "CREATE TABLE IF NOT EXISTS Scolopendro_morpho(
-            Morpho_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            Scolopendro_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            Morpho_id INT,
+            FOREIGN KEY (Morpho_id) REFERENCES Morphological_data(Morpho_id),
             Leg_count TINYINT
             )"))
 

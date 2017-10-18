@@ -1,3 +1,5 @@
+source("./R/creds.R", local = TRUE)
+
 roles <- data.frame(Role = c("Admin", "User", "Guest"),
                     Privileges = c("all", "add", "read-only"))
 dbWriteTable(conn = con, 

@@ -19,6 +19,7 @@ observeEvent(input$submitInput , {
                name = "Specimen",
                value = specimen,
                append = TRUE)
+  
   shinyjs::alert("Input recorded!")
 })
 
