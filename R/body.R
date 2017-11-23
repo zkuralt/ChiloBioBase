@@ -111,7 +111,7 @@ body <- dashboardBody(
             ),
             fluidRow(
               box(title = "Photos", solidHeader = TRUE,
-                  imageOutput("image"))
+                  imageOutput("image", width = "250px", height = "250px"))
             )
     ),
     
