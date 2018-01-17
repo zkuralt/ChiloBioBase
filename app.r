@@ -35,6 +35,7 @@ server <- function(input, output) {
   #### Data input ####
   # Input form
   source("./R/input_form.R", local = TRUE)
+  
   # Dynamic display of morphology input fields 
   source("./R/input_form_morphology.R", local = TRUE)
   

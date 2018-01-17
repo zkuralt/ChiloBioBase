@@ -1,4 +1,4 @@
-header <- dashboardHeader(title = "ChiloBioBase 2.0",
+header <- dashboardHeader(title = "ChiloBioBase",
                           dropdownMenu(type = "notifications", notificationItem(text = "4 records added today", icon("exclamation-triangle"))),
                           dropdownMenu(type = "tasks",
                                        taskItem(value = 0, color = "red", "Importing existing flatfile database"),
